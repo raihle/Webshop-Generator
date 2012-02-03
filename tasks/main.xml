@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="main" name="Webshop-Generator">
-    <property name="ECLIPSE_HOME" value="../../../../../../Program Files/eclipse"/>
-    <property name="ECLIPSE_WORKSPACE" value="../.."/>
+<project default="main" name="WebshopGenerator">
+    <property name="ECLIPSE_HOME" value="../../../../../Program Files/eclipse"/>
+    <property name="ECLIPSE_WORKSPACE" value="../../../Documents/Eclipse workspace"/>
 
     <!-- The classpath with only the dependencies used by the project -->
-    <path id="Webshop-Generator.libraryclasspath">
-        <pathelement location="${ECLIPSE_WORKSPACE}/Webshop-Generator/bin"/>
+    <path id="WebshopGenerator.libraryclasspath">
+        <pathelement location="${ECLIPSE_WORKSPACE}/WebshopGenerator/bin"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.7.0.v20110110.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.7.1.R37x_v20110808-1106.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/javax.transaction_1.1.1.v201105210645.jar"/>
@@ -31,23 +31,23 @@
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.codegen_2.6.0.v20110913-1156.jar"/>
     </path>
 
-    <path id="Webshop-Generator.classpath">
-        <path refid="Webshop-Generator.libraryclasspath"/>
+    <path id="WebshopGenerator.classpath">
+        <path refid="WebshopGenerator.libraryclasspath"/>
     </path>
 
     <!-- The classpath with only the jars available in the plugin folder of Eclipse -->
-    <path id="Webshop-Generator.libraryclasspath.alljars">
-        <pathelement location="../Webshop-Generator/bin"/>
+    <path id="WebshopGenerator.libraryclasspath.alljars">
+        <pathelement location="../WebshopGenerator/bin"/>
         <fileset dir="${ECLIPSE_HOME}/plugins/" includes="*.jar"/>
     </path>
 
-    <path id="Webshop-Generator.classpath.alljars">
-        <path refid="Webshop-Generator.libraryclasspath.alljars"/>
+    <path id="WebshopGenerator.classpath.alljars">
+        <path refid="WebshopGenerator.libraryclasspath.alljars"/>
     </path>
 
     <!-- The default task with the jars used by this project -->
     <target name="main">
-        <java classname="webshopGenerator.Main" classpathref="Webshop-Generator.classpath">
+        <java classname="webshopGenerator.Main" classpathref="WebshopGenerator.classpath">
             <arg value="${model}"/>
             <arg value="${target}"/>
         </java>
@@ -58,7 +58,7 @@
         Keep in mind that having two versions of the same jar can create problems
     -->
     <target name="main.alljars">
-        <java classname="webshopGenerator.Main" classpathref="Webshop-Generator.classpath">
+        <java classname="webshopGenerator.Main" classpathref="WebshopGenerator.classpath">
             <arg value="${model}"/>
             <arg value="${target}"/>
         </java>
