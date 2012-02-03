@@ -63,6 +63,7 @@ body { position:absolute; background-color:black; height:100%; width: 100%; }
 		[let results : Result_list = webshop.item_list_page.results]
 .resultlist { [css(results)/] }
 			[let template : Item = results.result_template]
+			[item_javascript(template, results)/]
 .resultlist .item { position:absolute; left:30px; [size(template)/] [style(template)/] }
 .resultlist .item .picture { position:absolute; [position(template.item_picture)/] }
 .resultlist .item .price { position:absolute; right:5px; top:5px; }
@@ -81,47 +82,7 @@ h1,h2,h3,h4,h5,p {margin-top: 0; margin-bottom: 0;}
 
 	[/file]
 
-	[file ('plugitems.js', false, 'UTF-8')]
-function get(item, tag) {
-	return item.getElementsByTagName(tag)['['/]0[']'/].childNodes['['/]0[']'/].nodeValue;
-}
 
-function loadXMLDoc(dname) {
-	var xhttp = false;
-	try {
-		xhttp = new XMLHttpRequest();
-	} catch (e) {
-		xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	xhttp.open("GET", dname, false);
-	xhttp.send();
-	return xhttp.responseXML;
-}
-
-function populateList() {
-	var xmlDoc = loadXMLDoc("./items.xml");
-	var items = xmlDoc.getElementsByTagName("item");
-	for (var i = 0; i < items.length; i++) {
-		var text = document.getElementById("resultlist").innerHTML;
- 		text = text.concat("<div class=\"item\" id=\"item_" + i + "\" style=\"top:" + i * 135 + "px;\">");
-
-		var item = items['['/]i[']'/];
-		var name = get(item, "name");
-		var price = get(item, "price");
-		var picture = get(item, "picture");
-		var description = get(item, "description");
-		
-		
-		
-		text = text.concat("	<h3 class=\"title\">" + name + "</h3>");
-		text = text.concat("	<p class=\"price\">Price: <span class=\"value\">" + price + "</span></p>");
-		text = text.concat("	<img class=\"picture\" width=\"100px\" height=\"100px\" src=\"" + picture + "\"/>");
-		text = text.concat("	<p class=\"description\">" + description + "</p>");
-		text = text.concat("</div>");
-		document.getElementById("resultlist").innerHTML = text;
-	}
-}
-	[/file]
 [/template]
 
 [template public css(component : Component) post (trim())]
@@ -160,4 +121,48 @@ position: absolute;
 	[if (component.yposition <> 0)]
 	top: [component.yposition/]px;
 	[/if]
+[/template]
+
+[template public item_javascript( item_template : Item, result_list : Result_list ) post (trim())]
+	[file ('plugitems.js', false, 'UTF-8')]
+function get(item, tag) {
+	return item.getElementsByTagName(tag)['['/]0[']'/].childNodes['['/]0[']'/].nodeValue;
+}
+
+function loadXMLDoc(dname) {
+	var xhttp = false;
+	try {
+		xhttp = new XMLHttpRequest();
+	} catch (e) {
+		xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xhttp.open("GET", dname, false);
+	xhttp.send();
+	return xhttp.responseXML;
+}
+
+function populateList() {
+	var xmlDoc = loadXMLDoc("./items.xml");
+	var items = xmlDoc.getElementsByTagName("item");
+	for (var i = 0; i < items.length; i++) {
+		var text = document.getElementById("resultlist").innerHTML;
+ 		text = text.concat("<div class=\"item\" id=\"item_" + i + "\" style=\"top:" + i * [result_list.distance_between_items + item_template.height/] + "px;\">");
+
+		var item = items['['/]i[']'/];
+		var name = get(item, "name");
+		var price = get(item, "price");
+		var picture = get(item, "picture");
+		var description = get(item, "description");
+		
+		
+		
+		text = text.concat("	<h3 class=\"title\">" + name + "</h3>");
+		text = text.concat("	<p class=\"price\">Price: <span class=\"value\">" + price + "</span></p>");
+		text = text.concat("	<img class=\"picture\" width=\"100px\" height=\"100px\" src=\"" + picture + "\"/>");
+		text = text.concat("	<p class=\"description\">" + description + "</p>");
+		text = text.concat("</div>");
+		document.getElementById("resultlist").innerHTML = text;
+	}
+}
+	[/file]
 [/template]
