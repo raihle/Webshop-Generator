@@ -6,31 +6,45 @@
    ========================================================================== */
 
 body { position:absolute; background-color:black; height:100%; width: 100%; }
-#page_1 { position:relative; margin-left:auto; margin-right:auto; width:960px; background-color:white; height:100%; }
-#branding_1 {width: 960px;
-height: 100px;  background-color: blue;}
-#branding_1 .text { position: absolute;
- 	left: 120px;
- 	top: 50px; }
-#branding_1 img {  }
-#text_2 { position: absolute;
- 	left: 10px;
- 	top: 110px; }
-#text_3 { position: absolute;
- 	left: 10px;
- 	top: 130px; }
-#text_4 { position: absolute;
- 	top: 600px; }
-.resultlist { position: absolute;
- 	left: 10px;
- 	top: 160px; }
-.resultlist .item { position:absolute; left:30px; width: 800px;
-height: 130px; border: solid black 1px; }
-.resultlist .item .picture { position:absolute;  }
-.resultlist .item .price { position:absolute; right:5px; top:5px; }
-.resultlist .item .price .value { font-size: 150%; color: #cc0000; }
-.resultlist .item .description { position:absolute; left:110px; top:25px; }
-.resultlist .item .picture { position:absolute; left:5px; top:25px; }
-
 h1,h2,h3,h4,h5,p {margin-top: 0; margin-bottom: 0;}
 
+
+#Example_homepage_page_1 { position:relative; margin-left:auto; margin-right:auto; width:960px; background-color:white; height:100%; }
+
+#Example_homepage_page_1 .resultlist { position: absolute; left: 10px; top: 160px;   }
+#Example_homepage_page_1 .resultlist .item { position:absolute; left:30px; width: 800px; height: 130px;  border: solid black 1px;  }
+#Example_homepage_page_1 .resultlist .item .picture { position:absolute;  }
+#Example_homepage_page_1 .resultlist .item .price { position:absolute; right:5px; top:5px; }
+#Example_homepage_page_1 .resultlist .item .price .value { font-size: 150%; color: #cc0000; }
+#Example_homepage_page_1 .resultlist .item .description { position:absolute; left:110px; top:25px; }
+#Example_homepage_page_1 .resultlist .item .picture { position:absolute; left:5px; top:25px; }
+
+#Example_homepage_page_1 #branding_2 {width: 960px; height: 100px; background-color: blue;  }
+#Example_homepage_page_1 #branding_2 .text { position: absolute; left: 120px; top: 50px;   }
+#Example_homepage_page_1 #branding_2 img {  }
+
+#Example_homepage_page_1 #text_3 { position: absolute; left: 10px; top: 110px;   }
+
+#Example_homepage_page_1 #text_4 { position: absolute; left: 10px; top: 130px;   }
+
+#Example_homepage_page_1 #text_5 { position: absolute; top: 600px;   }
+
+#Example_homepage_item_list { position:relative; margin-left:auto; margin-right:auto; width:960px; background-color:white; height:100%; }
+
+#Example_homepage_item_list #branding_1 {width: 960px; height: 100px; background-color: blue;  }
+#Example_homepage_item_list #branding_1 .text { position: absolute; left: 120px; top: 50px;   }
+#Example_homepage_item_list #branding_1 img {  }
+
+#Example_homepage_item_list #text_2 { position: absolute; left: 10px; top: 110px;   }
+
+#Example_homepage_item_list #text_3 { position: absolute; left: 10px; top: 130px;   }
+
+#Example_homepage_item_list #text_4 { position: absolute; top: 600px;   }
+
+#Example_homepage_item_list .resultlist { position: absolute; left: 10px; top: 160px;   }
+#Example_homepage_item_list .resultlist .item { position:absolute; left:30px; width: 800px; height: 130px;  border: solid black 1px;  }
+#Example_homepage_item_list .resultlist .item .picture { position:absolute;  }
+#Example_homepage_item_list .resultlist .item .price { position:absolute; right:5px; top:5px; }
+#Example_homepage_item_list .resultlist .item .price .value { font-size: 150%; color: #cc0000; }
+#Example_homepage_item_list .resultlist .item .description { position:absolute; left:110px; top:25px; }
+#Example_homepage_item_list .resultlist .item .picture { position:absolute; left:5px; top:25px; }

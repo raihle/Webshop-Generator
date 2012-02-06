@@ -4,42 +4,6 @@
 [template public main(webshop : Webshop_builder_3k)]
 	
 	[comment @main /]
-	[file ('home.html', false, 'UTF-8')]
-<html>
-	<head>
-		<title>[webshop.item_list_page.title/]</title>
-		<script src="./plugitems.js" type="text/javascript"></script>
-		<link rel=StyleSheet href="webshop.css" type="text/css" media=screen>
-	</head>
-	<body>
-		<div class="content" id="page_1">
-		[for (component : Component | webshop.item_list_page.components)]
-			[let branding : Branding = component]
-				<div class="branding" id="branding_[i/]">
-					<h1 class="text">[branding.company_name.text/]</h1>
-					<img src="[branding.company_logo.source/]" alt="[branding.company_logo.alternative_text/]"/>
-				</div>
-			[/let]
-			[let text : Text_field = component]
-				[if text.header_level > 0]
-					<h[text.header_level/] class="text" id="text_[i/]">[text.text/]</h[text.header_level/]>
-				[else]
-					<p class="text" id="text_[i/]">[text.text/]</p>
-				[/if]
-			[/let]
-		[/for]
-		[let results : Result_list = webshop.item_list_page.results]
-			<div class="resultlist" id="resultlist">
-				<script type="text/javascript">
-					populateList();
-				</script>
-			</div>
-		[/let]
-		</div>
-	</body>
-</html>			
-	[/file]
-	
 	[file ('webshop.css', false, 'UTF-8')]
 @import url(boilerplate.css);
 
@@ -49,86 +13,67 @@
    ========================================================================== */
 
 body { position:absolute; background-color:black; height:100%; width: 100%; }
-#page_1 { position:relative; margin-left:auto; margin-right:auto; width:960px; background-color:white; height:100%; }
-		[for (component : Component | webshop.item_list_page.components)]
-			[let branding : Branding = component]
-#branding_[i/] {[css(branding)/]}
-#branding_[i/] .text { [css(branding.company_name)/] }
-#branding_[i/] img { [css(branding.company_logo)/] }
-			[/let]
-			[let text : Text_field = component]
-#text_[i/] { [css(text)/] }
-			[/let]
-		[/for]
-		[let results : Result_list = webshop.item_list_page.results]
-.resultlist { [css(results)/] }
-			[let template : Item = results.result_template]
-.resultlist .item { position:absolute; left:30px; [size(template)/] [style(template)/] }
-.resultlist .item .picture { position:absolute; [position(template.item_picture)/] }
-.resultlist .item .price { position:absolute; right:5px; top:5px; }
-.resultlist .item .price .value { font-size: 150%; color: #cc0000; }
-.resultlist .item .description { position:absolute; left:110px; top:25px; }
-.resultlist .item .picture { position:absolute; left:5px; top:25px; }
-				[for (text : Text_field | template.text_fields)]
-					[if text.text.startsWith('item:') = false]
-.item_text_[i/] { [css(text)/] }
-					[/if]
-				[/for]
-			[/let]
-		[/let]
-
 h1,h2,h3,h4,h5,p {margin-top: 0; margin-bottom: 0;}
 
+[/file]
+[for ( page : Page | webshop.pages)]
+	[file ('webshop.css', true, 'UTF-8')]
+#[page.title.toString().trim().replaceAll(' ', '_').concat('_'+i.toString())/] { position:relative; margin-left:auto; margin-right:auto; width:960px; background-color:white; height:100%; }
 	[/file]
-
-	[file ('plugitems.js', false, 'UTF-8')]
-function get(item, tag) {
-	return item.getElementsByTagName(tag)['['/]0[']'/].childNodes['['/]0[']'/].nodeValue;
-}
-
-function loadXMLDoc(dname) {
-	var xhttp = false;
-	try {
-		xhttp = new XMLHttpRequest();
-	} catch (e) {
-		xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	xhttp.open("GET", dname, false);
-	xhttp.send();
-	return xhttp.responseXML;
-}
-
-function populateList() {
-	var xmlDoc = loadXMLDoc("./items.xml");
-	var items = xmlDoc.getElementsByTagName("item");
-	for (var i = 0; i < items.length; i++) {
-		var text = document.getElementById("resultlist").innerHTML;
- 		text = text.concat("<div class=\"item\" id=\"item_" + i + "\" style=\"top:" + i * 135 + "px;\">");
-
-		var item = items['['/]i[']'/];
-		var name = get(item, "name");
-		var price = get(item, "price");
-		var picture = get(item, "picture");
-		var description = get(item, "description");
-		
-		
-		
-		text = text.concat("	<h3 class=\"title\">" + name + "</h3>");
-		text = text.concat("	<p class=\"price\">Price: <span class=\"value\">" + price + "</span></p>");
-		text = text.concat("	<img class=\"picture\" width=\"100px\" height=\"100px\" src=\"" + picture + "\"/>");
-		text = text.concat("	<p class=\"description\">" + description + "</p>");
-		text = text.concat("</div>");
-		document.getElementById("resultlist").innerHTML = text;
-	}
-}
+	
+	[file (page.title.toString().trim().replaceAll(' ', '_').concat('_'+i.toString()).concat('.html'), false, 'UTF-8' )]
+<html>
+	<head>
+		<title>[page.title.concat(' | ').concat(webshop.company_name)/]</title>
+		<script src="./plugitems.js" type="text/javascript"></script>
+		<link rel=StyleSheet href="webshop.css" type="text/css" media=screen>
+	</head>
+	<body>
+		<div class="content" id="[page.title.toString().trim().replaceAll(' ', '_').concat('_'+i.toString())/]">
+		[let j : Integer = i]
+			[for (component : Component | page.components)]
+			[generate_component(component, i, page.title.toString().trim().replaceAll(' ', '_').concat('_'+j.toString()))/]
+			[/for]
+		[/let]
+		</div>
+	</body>
+</html>			
 	[/file]
+[/for]
+
+[file ('item_list_page.html', false, 'UTF-8')]
+	[file ('webshop.css', true, 'UTF-8')]
+#[item_list_page.title.toString().trim().replaceAll(' ', '_')/] { position:relative; margin-left:auto; margin-right:auto; width:960px; background-color:white; height:100%; }
+	[/file]
+	[let item_list_page : Item_list_page = webshop.item_list_page]
+<html>
+	<head>
+		<title>[item_list_page.title/]</title>
+		<script src="./plugitems.js" type="text/javascript"></script>
+		<link rel=StyleSheet href="webshop.css" type="text/css" media=screen>
+	</head>
+	<body>
+		<div class="content" id="[item_list_page.title.toString().trim().replaceAll(' ', '_')/]">
+		[for (component : Component | webshop.item_list_page.components)]
+			[generate_component(component, i, item_list_page.title.toString().trim().replaceAll(' ', '_'))/]
+		[/for]
+
+		[let results : Result_list = webshop.item_list_page.results]
+			[result_list_component(results, -1, item_list_page.title.toString().trim().replaceAll(' ', '_'))/]
+		[/let]
+		</div>
+	</body>
+</html>
+	[/let]
+[/file]
+
 [/template]
 
-[template public css(component : Component) post (trim())]
-[size(component)/] [position(component)/] [style(component)/]
+[template public css(component : Component) post (replaceAll('\n\r|\r|\n', ' '))]
+[size(component)/][position(component)/][style(component)/]
 [/template]
 
-[template public size(component : Component) post (trim())]
+[template public size(component : Component) post (replaceAll('\n\r|\r|\n', ' '))]
 [if (component.width > 0)]
 width: [component.width/]px;
 [/if]
@@ -137,7 +82,7 @@ height: [component.height/]px;
 [/if]
 [/template]
 
-[template public style(component : Component) ? (component.style.oclIsUndefined() = false) post (trim())]
+[template public style(component : Component) ? (component.style.oclIsUndefined() = false) post (replaceAll('\n\r|\r|\n', ' '))]
 	[if (component.style.background_color.oclIsUndefined() = false)]
 background-color: [component.style.background_color/];
 	[/if]
@@ -148,16 +93,123 @@ border: solid [border.color/] [border.thickness/]px;
 	[/if]
 [/template]
 
-[template public position(component : Component) ? (component.xposition <> 0 or component.yposition <> 0) post (trim())]
+[template public position(component : Component) ? (component.xposition <> 0 or component.yposition <> 0) post (replaceAll('\n\r|\r|\n', ' '))]
 position: absolute;
 	[if (component.xposition <> 0)]
 		[if (component.alignment.toString() = 'left')]
-	left: [component.xposition/]px;
+left: [component.xposition/]px;
 		[else]
-	right: [component.xposition/]px;	
+right: [component.xposition/]px;	
 		[/if]
 	[/if]
 	[if (component.yposition <> 0)]
-	top: [component.yposition/]px;
+top: [component.yposition/]px;
+
 	[/if]
+[/template]
+
+[template private branding(component : Component, i: Integer, page_name : String) post (trim())]
+	[let branding : Branding = component]
+<div class="branding" id="branding_[i/]">
+	<h1 class="text">[branding.company_name.text/]</h1>
+	<img src="[branding.company_logo.source/]" alt="[branding.company_logo.alternative_text/]"/>
+</div>
+		[file ('webshop.css', true, 'UTF-8')]
+#[page_name/] #branding_[i/] {[css(branding)/] }
+#[page_name/] #branding_[i/] .text { [css(branding.company_name)/] }
+#[page_name/] #branding_[i/] img { [css(branding.company_logo)/] }
+		[/file]
+	[/let]
+[/template]
+
+[template private text_field(component : Component, i: Integer, page_name : String) post (trim())]
+	[let text : Text_field = component]
+		[if text.header_level > 0]
+<h[text.header_level/] class="text" id="text_[i/]">[text.text/]</h[text.header_level/]>
+		[else]
+<p class="text" id="text_[i/]">[text.text/]</p>
+		[/if]
+		[file ('webshop.css', true, 'UTF-8')]
+#[page_name/] #text_[i/] { [css(text)/] }
+		[/file]
+	[/let]
+
+
+[/template]
+
+[template private picture(component : Component, i: Integer, page_name : String) post (trim())]
+	[let picture : Picture = component]
+<img id="picture_[i/]" src="[picture.source/]" alt="[picture.alternative_text/] title="[picture.title/]"/]>
+		[file ('webshop.css', true, 'UTF-8')]
+#[page_name/] #picture_[i/] { [css(picture)/] } 
+		[/file]
+	[/let]
+[/template]
+
+
+[template private result_list_component(component: Component, i : Integer, page_name : String) post (trim())]
+[let results : Result_list = component]			
+<div class="resultlist" id="resultlist_[i/]">
+	<script src= "js_functions.js" type="text/javascript"></script>
+	<script src= "['item_list_'.concat(page_name).concat('.js')/]" type="text/javascript"></script>
+	<script type="text/javascript">
+		populateList();
+	</script>
+</div>
+
+	[file ('item_list_'.concat(page_name).concat('.js'), false, 'UTF-8')]	
+function populateList() {
+	var xmlDoc = loadXMLDoc("./items.xml");
+	var items = xmlDoc.getElementsByTagName("item");
+	for (var i = 0; i < items.length; i++) {
+		var text = document.getElementById("resultlist_[i/]").innerHTML;
+ 		text = text.concat("<div class=\"item\" id=\"item_" + i + "\" style=\"top:" + i * [results.distance_between_items + results.result_template.height/] + "px;\">");
+
+		var item = items['['/]i[']'/];
+		[let template : Item = results.result_template]
+			[for (text_field : Text_field | template.text_fields) ]
+				[if (text_field.text.startsWith('item:'))]
+		var [text_field.text.substring(6)/] = get(item, "[text_field.text.substring(6)/]");
+					[if (text_field.text.substring(6) = 'name')]
+		text = text.concat("	<h3 class=\"title\">" + name + "</h3>");
+					[elseif (text_field.text.substring(6) = 'price')]
+		text = text.concat("	<p class=\"price\">Price: <span class=\"value\">" + price + "</span></p>");
+					[elseif (text_field.text.substring(6) = 'description')]
+		text = text.concat("	<p class=\"description\">" + description + "</p>");
+					[/if]
+				[/if]
+			[/for]
+		[/let]				
+		var picture = get(item, "picture");
+		text = text.concat("	<img class=\"picture\" width=\"100px\" height=\"100px\" src=\"" + picture + "\"/>");
+		text = text.concat("</div>");
+		document.getElementById("resultlist_[i/]").innerHTML = text;
+	}
+}
+	[/file]
+				
+	[file ('webshop.css', true, 'UTF-8')]
+#[page_name/] .resultlist { [css(results)/] }
+		[let template : Item = results.result_template]
+#[page_name/] .resultlist .item { position:absolute; left:30px; [size(template)/] [style(template)/] }
+#[page_name/] .resultlist .item .picture { position:absolute; [position(template.item_picture)/] }
+#[page_name/] .resultlist .item .price { position:absolute; right:5px; top:5px; }
+#[page_name/] .resultlist .item .price .value { font-size: 150%; color: #cc0000; }
+#[page_name/] .resultlist .item .description { position:absolute; left:110px; top:25px; }
+#[page_name/] .resultlist .item .picture { position:absolute; left:5px; top:25px; }
+			[for (text : Text_field | template.text_fields)]
+				[if text.text.startsWith('item:') = false]
+#[page_name/] .item_text_[i/] { [css(text)/] }
+				[/if]
+			[/for]
+		[/let]
+	[/file]
+[/let]
+[/template]
+
+[template public generate_component(component: Component, i : Integer, page_name : String) post (replaceAll('\n\r|\r|\n', ''))]
+[branding(component, i, page_name)/]
+[text_field(component, i, page_name)/]
+[picture(component, i, page_name)/]
+[result_list_component(component, i, page_name)/]
 [/template]
