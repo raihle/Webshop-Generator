@@ -41,32 +41,6 @@ h1,h2,h3,h4,h5,p {margin-top: 0; margin-bottom: 0;}
 	[/file]
 [/for]
 
-[file ('item_list_page.html', false, 'UTF-8')]
-	[file ('webshop.css', true, 'UTF-8')]
-#[item_list_page.title.toString().trim().replaceAll(' ', '_')/] { position:relative; margin-left:auto; margin-right:auto; width:960px; background-color:white; height:100%; }
-	[/file]
-	[let item_list_page : Item_list_page = webshop.item_list_page]
-<html>
-	<head>
-		<title>[item_list_page.title/]</title>
-		<script src="./plugitems.js" type="text/javascript"></script>
-		<link rel=StyleSheet href="webshop.css" type="text/css" media=screen>
-	</head>
-	<body>
-		<div class="content" id="[item_list_page.title.toString().trim().replaceAll(' ', '_')/]">
-		[for (component : Component | webshop.item_list_page.components)]
-			[generate_component(component, i, item_list_page.title.toString().trim().replaceAll(' ', '_'))/]
-		[/for]
-
-		[let results : Result_list = webshop.item_list_page.results]
-			[result_list_component(results, -1, item_list_page.title.toString().trim().replaceAll(' ', '_'))/]
-		[/let]
-		</div>
-	</body>
-</html>
-	[/let]
-[/file]
-
 [/template]
 
 [template public css(component : Component) post (replaceAll('\n\r|\r|\n', ' '))]
@@ -137,6 +111,22 @@ top: [component.yposition/]px;
 
 [/template]
 
+
+[template private auto_text_field(contents : String, component : Component, page_name : String) post (trim())]
+	[let text : Text_field = component]
+		[if text.header_level > 0]
+'<h[text.header_level/] class="text" id="text_[contents/]">' + [contents/] + '</h[text.header_level/]>'
+		[else]
+'<p class="text" id="text_[contents/]">' + [contents/] + '</p>'
+		[/if]
+		[file ('webshop.css', true, 'UTF-8')]
+#[page_name/] #text_[contents/] { [css(text)/] }
+		[/file]
+	[/let]
+
+
+[/template]
+
 [template private picture(component : Component, i: Integer, page_name : String) post (trim())]
 	[let picture : Picture = component]
 <img id="picture_[i/]" src="[picture.source/]" alt="[picture.alternative_text/] title="[picture.title/]"/]>
@@ -169,14 +159,13 @@ function populateList() {
 		[let template : Item = results.result_template]
 			[for (text_field : Text_field | template.text_fields) ]
 				[if (text_field.text.startsWith('item:'))]
-		var [text_field.text.substring(6)/] = get(item, "[text_field.text.substring(6)/]");
-					[if (text_field.text.substring(6) = 'name')]
-		text = text.concat("	<h3 class=\"title\">" + name + "</h3>");
-					[elseif (text_field.text.substring(6) = 'price')]
-		text = text.concat("	<p class=\"price\">Price: <span class=\"value\">" + price + "</span></p>");
-					[elseif (text_field.text.substring(6) = 'description')]
-		text = text.concat("	<p class=\"description\">" + description + "</p>");
-					[/if]
+					[let xmlquery : String = text_field.text.substring(6)] 
+		var [xmlquery/] = get(item, "[xmlquery/]");
+		text = text.concat([auto_text_field(xmlquery, text_field, page_name)/]);
+					[/let]
+				[else]
+alert("fus ro dah!");
+		text = text.concat('[text_field(text_field, i, page_name)/]');
 				[/if]
 			[/for]
 		[/let]				
