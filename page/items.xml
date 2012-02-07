@@ -5,7 +5,7 @@
 		<description>The most delicious chips ever made! Proof inside! ;)</description>
 		<availability>In stock</availability>
 		<rating>5</rating>
-		<name>Sourcream and onion chips</name>
+		<title>Sourcream and onion chips</title>
 	</item>
 	
 	<item>
@@ -14,7 +14,7 @@
 		<description>Second place, but soooo close.</description>
 		<availability>In stock</availability>
 		<rating>4</rating>
-		<name>Grill chips</name>
+		<title>Grill chips</title>
 	</item>
 	
 	<item>
@@ -23,6 +23,6 @@
 		<description>Pig in a potato is AWESOME</description>
 		<availability>Sold out, more arriving soon!</availability>
 		<rating>4</rating>
-		<name>Bacon chips</name>
+		<title>Bacon chips</title>
 	</item>
 </items>
