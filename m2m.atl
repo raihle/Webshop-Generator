@@ -1,0 +1,23 @@
+module m2m;
+
+-- @path WB3k=/Webshop-Builder-3k/Webshop_Builder_3k_Model.ecore
+-- @path HTML=/WebshopGenerator/HTML.ecore
+
+create OUT: HTML from IN: WB3k;
+	
+rule page2html {
+	from
+		s: WB3k!Page
+	to
+		html: HTML!HTML (
+			head <- head
+		),
+		
+		head: HTML!HEAD (
+			headElements <- title
+		),
+		
+		title: HTML!TITLE (
+			value <- s.title
+		)
+}
