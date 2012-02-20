@@ -11,8 +11,8 @@
     <eClassifiers xsi:type="ecore:EClass" name="HTML">
       <eStructuralFeatures xsi:type="ecore:EReference" name="head" ordered="false"
           lowerBound="1" eType="#/1/HEAD" containment="true" eOpposite="#/1/HEAD/html"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="body" ordered="false"
-          lowerBound="1" eType="#/1/BODY" containment="true" eOpposite="#/1/BODY/html"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="bbody" ordered="false"
+          lowerBound="1" eType="#/1/BBODY" containment="true" eOpposite="#/1/BBODY/html"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="HTMLElement">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" ordered="false"
@@ -43,7 +43,7 @@
           unique="false" lowerBound="1" eType="#/0/String"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TITLE" eSuperTypes="#/1/HEADElement"/>
-    <eClassifiers xsi:type="ecore:EClass" name="BODY" eSuperTypes="#/1/HTMLElement">
+    <eClassifiers xsi:type="ecore:EClass" name="BBODY" eSuperTypes="#/1/HTMLElement">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="background" ordered="false"
           unique="false" lowerBound="1" eType="#/0/String"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="bgcolor" ordered="false"
@@ -59,11 +59,11 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="bodyElements" ordered="false"
           upperBound="-1" eType="#/1/BODYElement" containment="true" eOpposite="#/1/BODYElement/body"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="html" ordered="false"
-          lowerBound="1" eType="#/1/HTML" eOpposite="#/1/HTML/body"/>
+          lowerBound="1" eType="#/1/HTML" eOpposite="#/1/HTML/bbody"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="BODYElement" abstract="true" eSuperTypes="#/1/HTMLElement">
       <eStructuralFeatures xsi:type="ecore:EReference" name="body" ordered="false"
-          lowerBound="1" eType="#/1/BODY" eOpposite="#/1/BODY/bodyElements"/>
+          lowerBound="1" eType="#/1/BBODY" eOpposite="#/1/BBODY/bodyElements"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="H1" eSuperTypes="#/1/BODYElement"/>
     <eClassifiers xsi:type="ecore:EClass" name="H2" eSuperTypes="#/1/BODYElement"/>
@@ -187,5 +187,9 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="H5" eSuperTypes="#/1/BODYElement"/>
     <eClassifiers xsi:type="ecore:EClass" name="H6" eSuperTypes="#/1/BODYElement"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Website">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="pages" upperBound="-1"
+          eType="#/1/HTML" containment="true"/>
+    </eClassifiers>
   </ecore:EPackage>
 </xmi:XMI>

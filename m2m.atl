@@ -1,72 +1,203 @@
 module m2m;
-
+-- Note, this M2M transformation is useless because the HTML metamodel is incomplete and we don't generate a CSS model.
+-- It can't actually be used as an intermediate step because of a lack of communication with other components.
 -- @path WB3k=/Webshop-Builder-3k/Webshop_Builder_3k_Model.ecore
 -- @path HTML=/Webshop-Generator/HTML1.ecore
 
 create OUT: HTML from IN: WB3k;
-	
-rule page2html {
+
+rule website {
+	from
+		s: WB3k!Webshop_builder_3k
+	to
+		t: HTML!Website (
+			pages <- s.pages -> collect (c | thisModule.page2html(c))
+		)
+}
+
+lazy rule page2html {
 	from
 		s: WB3k!Page
 	to
 		html: HTML!HTML (
-			head <- head
+			head <- head,
+			bbody <- body
 		),
 		
-	head: HTML!HEAD (
+		head: HTML!HEAD (
 			headElements <- title
 		),
 		
 		title: HTML!TITLE (
 			value <- s.title
+		),
+	
+		body: HTML!BBODY (
+			bodyElements <- s.components -> select (q | q.oclIsTypeOf(WB3k!Branding)) -> collect (c | thisModule.branding2html(c)),
+			bodyElements <- s.components -> select (q | q.oclIsTypeOf(WB3k!Text_field)) -> collect (c | c.textfield2html),
+			bodyElements <- s.components -> select (q | q.oclIsTypeOf(WB3k!Picture)) -> collect (c | thisModule.picture2html(c)),
+			bodyElements <- s.components -> select (q | q.oclIsTypeOf(WB3k!Result_list)) -> collect (c | thisModule.results2html(c)),
+			bodyElements <- s.components -> select (q | q.oclIsTypeOf(WB3k!Navigation_button)) -> collect (c | c.button2html)
 		)
 }
 
-rule branding2html {
+lazy rule branding2html  {
 	from
-		s: WB3k!Branding
+		s : WB3k!Branding
+	using {
+		level : Integer = s.company_name.header_level;
+	}
 	to
-		body: HTML!BODY (
-			bodyElements <- img,
-			bodyElements <- s.createTextField,
-			bodyElements <- divTag
-		),
-		img: HTML!IMG (
-			src <- s.company_logo.source,
-			alt <- s.company_logo.alternative_text,
-			align <- s.company_logo.alignment.toString(),
-			height <- s.company_logo.height.toString(),
-			width <- s.company_logo.width.toString()
-		),
-		divTag: HTML!DIV (
-			align <- s.alignment.toString()	
+		divelem : HTML!DIV (
+			children <- s.company_name.textfield2html,
+			children <- thisModule.picture2html(s.company_logo)
 		)
 }
 
-helper context WB3k!Branding def: createTextField: HTML!BODYElement  = 
-	if( self.company_name.header_level = 0) then 
-		HTML!P
-	else 
-		if (self.company_name.header_level = 1) then
-			HTML!H1
-		else 
-			if (self.company_name.header_level = 2) then
-				HTML!H2	
-			else 
-				if (self.company_name.header_level = 3) then
-					HTML!H3
-				else 
-					if (self.company_name.header_level = 4) then
-						HTML!H4
-					else 
-						if (self.company_name.header_level = 5) then
-							HTML!H5
-						else
-							HTML!H6
-						 endif
-					 endif
-				 endif
-			 endif
-		 endif
-	 endif
-;
+lazy rule awithpictureandtext2html {
+	from 
+		s : WB3k!Navigation_button
+	to
+		t : HTML!A (
+			ahref <- s.link.target.title + '.html',
+			children <- thisModule.picture2html(s.picture),
+			children <- s.text.textfield2html
+		)
+}
+
+lazy rule awithpicture2html {
+	from 
+		s : WB3k!Navigation_button
+	to
+		t : HTML!A (
+			ahref <-  s.link.target.title + '.html',
+			children <- thisModule.picture2html(s.picture)
+		)
+}
+
+lazy rule awithtext2html {
+	from 
+		s : WB3k!Navigation_button
+	to
+		t : HTML!A (
+			ahref <-  s.link.target.title + '.html',
+			children <- s.text.textfield2html
+		)
+}
+
+helper context WB3k!Navigation_button def: button2html : HTML!BODYElement =
+	if self.text.oclIsUndefined() then 
+		thisModule.awithpicture2html(self)
+	else if self.picture.oclIsUndefined() then
+		thisModule.awithtext2html(self)
+	else
+		thisModule.awithpictureandtext2html(self)
+	endif endif;
+
+lazy rule picture2html {
+	from
+		s : WB3k!Picture
+	to
+		imgelem : HTML!IMG (
+			src <- s.source,
+			alt <- s.alternative_text,
+			height <- s.height.toString(),
+			width <- s.width.toString()
+		)
+}
+
+lazy rule results2html {
+	from
+		s : WB3k!Result_list
+	to
+		divelem : HTML!DIV (
+			children <- itemdiv
+		),
+		
+		itemdiv : HTML!DIV (
+			children <- thisModule.picture2html(s.result_template.item_picture),
+			children <- s.result_template.text_fields -> collect (c | c.textfield2html)
+		)
+}
+
+helper context WB3k!Text_field def: textfield2html : HTML!BODYElement =
+	let level : Integer = self.header_level in
+	if level = 0 then 
+		thisModule.noheader2html(self)
+	else if level = 1 then
+		thisModule.header12html(self)
+	else if level = 2 then 
+		thisModule.header22html(self)
+	else if level = 3 then 
+		thisModule.header32html(self)
+	else if level = 4 then 
+		thisModule.header42html(self)
+	else if level = 5 then 
+		thisModule.header52html(self)
+	else
+		thisModule.header62html(self)
+	endif endif endif endif endif endif;
+
+lazy rule noheader2html {
+	from
+		s : WB3k!Text_Field (s.header_level = 0)
+	to
+		text : HTML!P (
+			value <- s.text
+		)
+}
+
+lazy rule header12html {
+	from
+		s : WB3k!Text_Field (s.header_level = 1)
+	to
+		text : HTML!H1 (
+			value <- s.text
+		)
+}
+
+lazy rule header22html {
+	from
+		s : WB3k!Text_Field (s.header_level = 2)
+	to
+		text : HTML!H2 (
+			value <- s.text
+		)
+}
+
+lazy rule header32html {
+	from
+		s : WB3k!Text_Field (s.header_level = 3)
+	to
+		text : HTML!H3 (
+			value <- s.text
+		)
+}
+
+lazy rule header42html {
+	from
+		s : WB3k!Text_Field (s.header_level = 4)
+	to
+		text : HTML!H4 (
+			value <- s.text
+		)
+}
+
+lazy rule header52html {
+	from
+		s : WB3k!Text_Field (s.header_level = 5)
+	to
+		text : HTML!H5 (
+			value <- s.text
+		)
+}
+
+lazy rule header62html {
+	from
+		s : WB3k!Text_Field (s.header_level = 6)
+	to
+		text : HTML!H6 (
+			value <- s.text
+		)
+}
+
