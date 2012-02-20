@@ -1,7 +1,7 @@
 module m2m;
 
 -- @path WB3k=/Webshop-Builder-3k/Webshop_Builder_3k_Model.ecore
--- @path HTML=/WebshopGenerator/HTML.ecore
+-- @path HTML=/Webshop-Generator/HTML1.ecore
 
 create OUT: HTML from IN: WB3k;
 	
@@ -13,7 +13,7 @@ rule page2html {
 			head <- head
 		),
 		
-		head: HTML!HEAD (
+	head: HTML!HEAD (
 			headElements <- title
 		),
 		
@@ -21,3 +21,52 @@ rule page2html {
 			value <- s.title
 		)
 }
+
+rule branding2html {
+	from
+		s: WB3k!Branding
+	to
+		body: HTML!BODY (
+			bodyElements <- img,
+			bodyElements <- s.createTextField,
+			bodyElements <- divTag
+		),
+		img: HTML!IMG (
+			src <- s.company_logo.source,
+			alt <- s.company_logo.alternative_text,
+			align <- s.company_logo.alignment.toString(),
+			height <- s.company_logo.height.toString(),
+			width <- s.company_logo.width.toString()
+		),
+		divTag: HTML!DIV (
+			align <- s.alignment.toString()	
+		)
+}
+
+helper context WB3k!Branding def: createTextField: HTML!BODYElement  = 
+	if( self.company_name.header_level = 0) then 
+		HTML!P
+	else 
+		if (self.company_name.header_level = 1) then
+			HTML!H1
+		else 
+			if (self.company_name.header_level = 2) then
+				HTML!H2	
+			else 
+				if (self.company_name.header_level = 3) then
+					HTML!H3
+				else 
+					if (self.company_name.header_level = 4) then
+						HTML!H4
+					else 
+						if (self.company_name.header_level = 5) then
+							HTML!H5
+						else
+							HTML!H6
+						 endif
+					 endif
+				 endif
+			 endif
+		 endif
+	 endif
+;

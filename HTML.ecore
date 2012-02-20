@@ -2,12 +2,12 @@
 <xmi:XMI xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore">
-  <ecore:EPackage name="PrimitiveTypes" nsURI="htmlptns" nsPrefix="htmlptns">
+  <ecore:EPackage name="PrimitiveTypes" nsURI="http://htmlptns/1.0" nsPrefix="htmlptns">
     <eClassifiers xsi:type="ecore:EDataType" name="Boolean"/>
     <eClassifiers xsi:type="ecore:EDataType" name="String"/>
     <eClassifiers xsi:type="ecore:EDataType" name="Integer"/>
   </ecore:EPackage>
-  <ecore:EPackage name="HTML" nsURI="htmlns" nsPrefix="htmlns">
+  <ecore:EPackage name="HTML" nsURI="http://HTML/1.0" nsPrefix="HTML">
     <eClassifiers xsi:type="ecore:EClass" name="HTML">
       <eStructuralFeatures xsi:type="ecore:EReference" name="head" ordered="false"
           lowerBound="1" eType="#/1/HEAD" containment="true" eOpposite="#/1/HEAD/html"/>
