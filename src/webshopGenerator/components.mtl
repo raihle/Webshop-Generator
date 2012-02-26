@@ -65,7 +65,8 @@
 [/template]
 
 [template private auto_text_field(contents : String, component : Component, page_name : String) post (trim())]
-	[let text : Text_field = component]
+[if component.oclIsTypeOf(Text_field)]
+	[let text : Text_field = component.oclAsType(Text_field)]
 		[if text.header_level > 0]
 '<h[text.header_level/] class="text" id="text_[contents/]">' + [contents/] + '</h[text.header_level/]>'
 		[else]
@@ -75,12 +76,13 @@
 #[page_name/] #text_[contents/] { [css(text)/] }
 		[/file]
 	[/let]
+[/if]
 [/template]
 
 [template private picture(component : Component, i: Integer, page_name : String) post (trim())]
 [if component.oclIsTypeOf(Picture)]
 	[let picture : Picture = component.oclAsType(Picture)]
-<img id="picture_[i/]" src="[picture.source/]" alt="[picture.alternative_text/] title="[picture.title/]"/]>
+<img id="picture_[i/]" src="[picture.source/]" alt="[picture.alternative_text/]" title="[picture.title/]"/>
 		[file ('webshop.css', true, 'UTF-8')]
 #[page_name/] #picture_[i/] { [css(picture)/] } 
 		[/file]
